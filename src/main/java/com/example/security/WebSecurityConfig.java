@@ -22,7 +22,10 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests((authorizeRequests) ->
-                        authorizeRequests.anyRequest().authenticated()
+                        authorizeRequests
+                                .requestMatchers("/api1").hasRole("user")
+                                .requestMatchers("/api2").hasRole("admin")
+                                .anyRequest().authenticated()
                 )
                 .formLogin((formLogin) ->
                         formLogin
@@ -36,7 +39,7 @@ public class WebSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(){
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("user1").password("1234").build());
+        manager.createUser(User.withUsername("user1").password("1234").roles("user").build());
         return manager;
     }
 
